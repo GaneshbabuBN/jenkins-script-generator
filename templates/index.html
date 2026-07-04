@@ -1,0 +1,396 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row justify-content-center fade-up">
+
+    <div class="col-lg-10">
+
+        <!-- Hero -->
+
+        <div class="card mb-4">
+
+            <div class="card-body text-center py-5">
+
+                <div class="display-5 mb-3">
+
+                    <i class="bi bi-terminal-fill text-primary"></i>
+
+                </div>
+
+                <h1 class="mb-3">
+
+                    Jenkins Freestyle Script Generator
+
+                </h1>
+
+                <p class="text-muted mb-4">
+
+                    Generate production-ready Jenkins Freestyle build scripts
+                    with Docker deployment in seconds.
+
+                </p>
+
+                <span class="badge bg-success fs-6 px-3 py-2">
+
+                    <i class="bi bi-database-check me-2"></i>
+
+                    Database Status :
+                    {{ database_status }}
+
+                </span>
+
+            </div>
+
+        </div>
+
+        <!-- Form -->
+
+        <div class="card">
+
+            <div class="card-body">
+
+                <h3 class="mb-4">
+
+                    <i class="bi bi-sliders me-2 text-primary"></i>
+
+                    Project Configuration
+
+                </h3>
+
+                <form method="POST" id="generatorForm">
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+
+                                <i class="bi bi-folder-fill me-2"></i>
+
+                                Project Name
+
+                            </label>
+
+                            <input
+                                class="form-control"
+                                name="project_name"
+                                placeholder="My Flask Project"
+                                required>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+
+                                <i class="bi bi-git me-2"></i>
+
+                                GitHub Repository URL
+
+                            </label>
+
+                            <input
+                                class="form-control"
+                                name="github_url"
+                                placeholder="https://github.com/user/project.git"
+                                required>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+
+                                <i class="bi bi-git me-2"></i>
+
+                                Branch
+
+                            </label>
+
+                            <input
+                                class="form-control"
+                                name="branch"
+                                value="main">
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+
+                                <i class="bi bi-box-seam me-2"></i>
+
+                                Docker Image Name
+
+                            </label>
+
+                            <input
+                                class="form-control"
+                                name="docker_image"
+                                required>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+
+                                <i class="bi bi-hdd-stack me-2"></i>
+
+                                Docker Container Name
+
+                            </label>
+
+                            <input
+                                class="form-control"
+                                name="docker_container"
+                                required>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+
+                                <i class="bi bi-person-circle me-2"></i>
+
+                                Docker Hub Username
+
+                            </label>
+
+                            <input
+                                class="form-control"
+                                name="dockerhub_username">
+
+                        </div>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            <i class="bi bi-gear-fill me-2"></i>
+
+                            Environment Variables
+
+                        </label>
+
+                        <textarea
+                            class="form-control"
+                            rows="5"
+                            name="environment_variables"
+                            placeholder="KEY=value"></textarea>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+
+                                <i class="bi bi-code-slash me-2"></i>
+
+                                Build Commands
+
+                            </label>
+
+                            <textarea
+                                class="form-control"
+                                rows="5"
+                                name="build_commands"></textarea>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+
+                                <i class="bi bi-bug-fill me-2"></i>
+
+                                Test Commands
+
+                            </label>
+
+                            <textarea
+                                class="form-control"
+                                rows="5"
+                                name="test_commands"></textarea>
+
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+
+                                <i class="bi bi-cloud-upload-fill me-2"></i>
+
+                                Deployment Type
+
+                            </label>
+
+                            <select
+                                class="form-select"
+                                name="deployment_type">
+
+                                <option>Docker</option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+
+                            <label class="form-label">
+
+                                <i class="bi bi-usb-plug-fill me-2"></i>
+
+                                Port Number
+
+                            </label>
+
+                            <input
+                                class="form-control"
+                                name="port"
+                                placeholder="5000"
+                                required>
+
+                        </div>
+
+                    </div>
+
+                    <div class="d-grid">
+
+                        <button
+                            class="btn btn-primary btn-lg">
+
+                            <i class="bi bi-lightning-charge-fill me-2"></i>
+
+                            Generate Jenkins Freestyle Script
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        {% if generated_script %}
+
+        <div class="card mt-4">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
+
+                    <h3 class="mb-2">
+
+                        <i class="bi bi-file-earmark-code-fill text-success me-2"></i>
+
+                        Generated Script
+
+                    </h3>
+
+                    <span class="badge bg-primary">
+
+                        Ready to Download
+
+                    </span>
+
+                </div>
+
+                <textarea
+                    id="generated_script"
+                    class="form-control"
+                    rows="20"
+                    readonly>{{ generated_script }}</textarea>
+
+                <div class="row mt-4 g-3">
+
+                    <div class="col-md-4 d-grid">
+
+                        <button
+                            class="btn btn-success"
+                            type="button"
+                            onclick="copyScript()">
+
+                            <i class="bi bi-clipboard-check me-2"></i>
+
+                            Copy Script
+
+                        </button>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <form
+                            action="/download/sh"
+                            method="POST"
+                            class="d-grid">
+
+                            <input
+                                type="hidden"
+                                name="generated_script"
+                                value="{{ generated_script }}">
+
+                            <button
+                                class="btn btn-secondary">
+
+                                <i class="bi bi-download me-2"></i>
+
+                                Download .sh
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <form
+                            action="/download/txt"
+                            method="POST"
+                            class="d-grid">
+
+                            <input
+                                type="hidden"
+                                name="generated_script"
+                                value="{{ generated_script }}">
+
+                            <button
+                                class="btn btn-dark">
+
+                                <i class="bi bi-file-earmark-text me-2"></i>
+
+                                Download .txt
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row justify-content-center fade-up">
+
+    <div class="col-lg-10">
+
+        <!-- Header -->
+        <div class="card mb-4">
+            <div class="card-body text-center py-4">
+
+                <div class="display-5 mb-3">
+                    <i class="bi bi-clock-history text-primary"></i>
+                </div>
+
+                <h1 class="mb-2">
+                    Generated Script History
+                </h1>
+
+                <p class="fw-bold text-primary">
+                    Total Scripts : {{ total_scripts }}
+                </p>
+
+                <p class="text-muted mb-4">
+                    View all previously generated Jenkins Freestyle scripts.
+                </p>
+
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-center flex-wrap gap-2">
+
+                    <form action="/clear-history"
+                          method="POST"
+                          onsubmit="return confirm('⚠ This will permanently delete ALL history.\n\nDo you want to continue?');">
+
+                        <button class="btn btn-danger">
+                            <i class="bi bi-trash3-fill me-2"></i>
+                            Clear History
+                        </button>
+
+                    </form>
+
+                    <form action="/clear-cache"
+                          method="POST"
+                          onsubmit="return confirm('Clear all cached files and temporary data?');">
+
+                        <button class="btn btn-warning text-dark">
+                            <i class="bi bi-broom-fill me-2"></i>
+                            Clear Cache
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show">
+
+                        {{ message }}
+
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert"></button>
+
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% if scripts %}
+
+            {% for script in scripts %}
+
+            <div class="card mb-4 history-card">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-start flex-wrap mb-3">
+
+                        <div>
+
+                            <h4 class="text-primary mb-2">
+
+                                <i class="bi bi-folder-fill me-2"></i>
+
+                                {{ script.project_name }}
+
+                            </h4>
+
+                        </div>
+
+                        <span class="badge bg-success px-3 py-2">
+
+                            <i class="bi bi-check-circle-fill me-1"></i>
+
+                            Generated
+
+                        </span>
+
+                    </div>
+
+                    <div class="row mb-3">
+
+                        <div class="col-md-8">
+
+                            <label class="form-label fw-bold">
+
+                                <i class="bi bi-git me-2"></i>
+
+                                GitHub Repository
+
+                            </label>
+
+                            <div class="form-control bg-light">
+
+                                {{ script.github_url }}
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-4 mt-3 mt-md-0">
+
+                            <label class="form-label fw-bold">
+
+                                <i class="bi bi-calendar-event me-2"></i>
+
+                                Created
+
+                            </label>
+
+                            <div class="form-control bg-light">
+
+                                {{ script.created_at.strftime("%d-%m-%Y %H:%M:%S") }}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <label class="form-label fw-bold">
+
+                        <i class="bi bi-file-earmark-code-fill me-2"></i>
+
+                        Generated Jenkins Script
+
+                    </label>
+
+                    <textarea
+                        class="form-control"
+                        rows="14"
+                        readonly>{{ script.generated_script }}</textarea>
+
+                    <div class="mt-3 d-flex flex-wrap gap-2">
+
+                        <button
+                            class="btn btn-success"
+                            type="button"
+                            onclick="navigator.clipboard.writeText(`{{ script.generated_script | replace('`','\\`') }}`); this.innerHTML='<i class=&quot;bi bi-check-lg me-2&quot;></i>Copied';">
+
+                        <i class="bi bi-clipboard-check me-2"></i>
+
+                        Copy Script
+
+                        </button>
+
+                        <form
+                            action="/delete-history/{{ script.id }}"
+                            method="POST"
+                            onsubmit="return confirm('Delete this history record?');">
+
+                            <button
+                                class="btn btn-outline-danger">
+
+                                <i class="bi bi-trash me-2"></i>
+
+                                 Delete
+
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        {% else %}
+
+        <div class="card">
+
+            <div class="card-body text-center py-5">
+
+                <div class="display-3 text-secondary mb-3">
+
+                    <i class="bi bi-inbox"></i>
+
+                </div>
+
+                <h3>
+
+                    No Generated Scripts Found
+
+                </h3>
+
+                <p class="text-muted">
+
+                    Your generated Jenkins scripts will appear here after you create them.
+
+                </p>
+
+                <a href="/"
+                   class="btn btn-primary">
+
+                    <i class="bi bi-plus-circle me-2"></i>
+
+                    Generate New Script
+
+                </a>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

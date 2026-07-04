@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+
+# Environment
+.env
+
+# Virtual env
+venv/
+.env/
+
+# Git internal (never commit)
+.git/
+
+# OS
+.DS_Store
