@@ -1,3 +1,5 @@
+version: "3.8"
+
 services:
   jenkins-script-generator:
     image: jenkins-script-generator
@@ -8,5 +10,8 @@ services:
 
     ports:
       - "5000:5000"
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
     restart: always
