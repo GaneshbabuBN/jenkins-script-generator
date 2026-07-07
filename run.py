@@ -1,7 +1,17 @@
 from waitress import serve
 from app import app
+import logging
+import sys
 
-print("Starting Waitress server...")
+
+logging.basicConfig(
+    stream=sys.stdout,
+    level=logging.INFO
+)
+
+
+print("Starting Waitress server...", flush=True)
+
 
 serve(
     app,
@@ -9,4 +19,5 @@ serve(
     port=5000
 )
 
-print("Server stopped.")
+
+print("Server stopped.", flush=True)
