@@ -353,6 +353,14 @@ docker run -d --name $CONTAINER_NAME -p $PORT:$PORT $IMAGE_NAME
 
 ---
 
+# 🐛 Issues I Faced During Development
+
+While building and deploying the Jenkins Script Generator, I faced a few Database Connection Issues:
+
+## 1. PostgreSQL Database Connection Issues
+- Initially faced errors while connecting Flask with PostgreSQL.
+- Resolved by verifying database credentials, environment variables, and PostgreSQL service status.
+
 # 📄 License
 
 This project is open-source and free to use for educational and production automation purposes.
